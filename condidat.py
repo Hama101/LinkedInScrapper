@@ -8,38 +8,36 @@ driver = DRIVER
 
 # a class to get data from a profile
 class Condidat:
-    def __init__(self, PROFILE_URL , driver):
+    def __init__(self, PROFILE_URL , driver , works_for):
         self.PROFILE_URL = PROFILE_URL
         self.driver = driver
         self.driver.get(PROFILE_URL)
+        self.works_for = works_for
         time.sleep(3)
     
     
     def get_data(self):
         self.full_name = self.driver.find_element_by_class_name('text-heading-xlarge').get_attribute('innerHTML')
-        self.username = f"{self.full_name.replace(' ','')}{random.randint(1,1000)}"
-        self.email = f"{self.username}@gmail.com"
         self.img_url = self.driver.find_element_by_class_name('pv-top-card-profile-picture__image').get_attribute('src')
-        download_image("images/",self.img_url , f"{self.username}.jpg")
+        download_image(f"images/{self.works_for}/",self.img_url , f"{self.full_name}.jpg")
         self.job = self.driver.find_element_by_class_name('text-body-medium').get_attribute('innerHTML')
         
         data = {
             "full_name": self.full_name,
-            "username": self.username,
-            "email": self.email,
             "img_url": self.img_url,
             "job": self.job,
         }
+        #save the data to json file using json mode
         return data
 
 
 
 
 #loop throw a list and iniate it condidat object than get data and append it to a new list
-def get_data(profiles):
+def get_data(profiles , works_for = None):
     data = []
     for profile in profiles:
-        condidat = Condidat(PROFILE_URL=profile , driver=driver)
+        condidat = Condidat(PROFILE_URL=profile , driver=driver , works_for=works_for)
         try:
             c_data = condidat.get_data()
         except Exception as e:
