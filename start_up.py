@@ -22,20 +22,24 @@ class StartUp:
         time.sleep(2)
         n_url = self.driver.current_url
         employees = []
-        for i in range(0,1):
-            #click on the button and save the url
-            time.sleep(2)
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(2)
-            l = [x.get_attribute('href') for x in driver.find_elements_by_class_name('app-aware-link')]
-            employees.append(l)
-            driver.get(f"{n_url}&page={i+1}")
+        for i in range(0,30):
+            try:        
+                #click on the button and save the url
+                time.sleep(2)
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(2)
+                l = [x.get_attribute('href') for x in driver.find_elements_by_class_name('app-aware-link')]
+                employees.append(l)
+                driver.get(f"{n_url}&page={i+1}")
+            except Exception as e:
+                print(e)
+                break
 
         #romve the duplicates from the list
         employees = list(set(flatten_list(employees)))
         #getting the data from the profiles
         data = get_data(profiles=employees , works_for=self.full_name)
-        pass
+        return data
     
     def get_data(self):
         self.full_name = self.driver.find_element_by_class_name('t-24').find_element_by_tag_name('span').get_attribute('innerHTML')
@@ -66,7 +70,7 @@ def take_a_break():
     time.sleep(random.randint(5,10))
     driver.get("https://www.linkedin.com/feed/")
     #scroll throw the feed slowly
-    for i in range(0,5):
+    for i in range(0,10):
         time.sleep(1)
         driver.execute_script(f"window.scrollTo(0, {i*1000});")
         likes_btn = driver.find_elements_by_class_name('reactions-react-button')
@@ -91,11 +95,11 @@ def s_get_data(profiles):
     data = []
     for index , profile in enumerate(profiles):
         start_up = StartUp(PROFILE_URL=profile , driver=driver)
-        # try:
-        c_data = start_up.get_data()
-        # except Exception as e:
-        #     print("bad profile ",profile)
-        #     continue
+        try:
+            c_data = start_up.get_data()
+        except Exception as e:
+            print("bad profile ",profile)
+            continue
         print("got ----> ",c_data)
         data.append(c_data)
         if index == 10:
