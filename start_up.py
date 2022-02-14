@@ -22,7 +22,7 @@ class StartUp:
         time.sleep(2)
         n_url = self.driver.current_url
         employees = []
-        for i in range(0,30):
+        for i in range(0,1):
             try:        
                 #click on the button and save the url
                 time.sleep(2)
