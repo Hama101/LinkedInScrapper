@@ -14,7 +14,7 @@ class StartUp:
         self.PROFILE_URL = PROFILE_URL
         self.driver = driver
         self.driver.get(PROFILE_URL)
-        time.sleep(3)
+        time.sleep(10)
     
     def get_employess(self):
         url = self.driver.find_element_by_class_name('mt1').find_element_by_tag_name('a').get_attribute('href')
@@ -22,7 +22,7 @@ class StartUp:
         time.sleep(2)
         n_url = self.driver.current_url
         employees = []
-        for i in range(0,1):
+        for i in range(0,10):
             try:        
                 #click on the button and save the url
                 time.sleep(2)
@@ -45,8 +45,11 @@ class StartUp:
         self.full_name = self.driver.find_element_by_class_name('t-24').find_element_by_tag_name('span').get_attribute('innerHTML')
         self.img_url = self.driver.find_element_by_class_name('org-top-card-primary-content__logo').get_attribute('src')
         download_image("images/startups/",self.img_url , f"{self.full_name}.jpg")
-        self.bio = self.driver.find_element_by_class_name('org-top-card-summary__tagline').get_attribute('innerHTML')
-        
+        try:
+            self.bio = self.driver.find_element_by_class_name('org-top-card-summary__tagline').get_attribute('innerHTML')
+        except Exception as e:
+            self.bio = ""
+
         #get the code sr of the page than save it to html file
         code_sr = self.driver.page_source
         with open(f"html_files/startups/{self.full_name}.html" , 'w' , encoding='utf-8') as f:
@@ -98,7 +101,7 @@ def s_get_data(profiles):
         try:
             c_data = start_up.get_data()
         except Exception as e:
-            print("bad profile ",profile)
+            print(e)
             continue
         print("got ----> ",c_data)
         data.append(c_data)

@@ -1,1 +1,1 @@
-Email;Password
+EMAIL;Password
