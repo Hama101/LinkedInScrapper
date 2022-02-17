@@ -22,8 +22,15 @@ class Condidat:
         download_image(f"images/{self.works_for}/",self.img_url , f"{self.full_name}.jpg")
         self.job = self.driver.find_element_by_class_name('text-body-medium').get_attribute('innerHTML')
         
+        #get the code sr of the page than save it to html file
+        code_sr = self.driver.page_source
+        with open(f"html_files/{self.works_for}/{self.full_name}.html" , 'w' , encoding='utf-8') as f:
+            f.write(code_sr)
+        
+
         data = {
             "full_name": self.full_name,
+            "PROFILE_URL": self.PROFILE_URL,
             "img_url": self.img_url,
             "job": self.job,
         }
@@ -40,6 +47,7 @@ def get_data(profiles , works_for = None):
         condidat = Condidat(PROFILE_URL=profile , driver=driver , works_for=works_for)
         try:
             c_data = condidat.get_data()
+            #save the data to json file using json model
         except Exception as e:
             print("bad profile ",profile)
             continue
